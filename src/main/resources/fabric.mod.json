@@ -1,0 +1,38 @@
+{
+	"schemaVersion": 1,
+	"id": "mcfunmod",
+	"version": "${version}",
+	"name": "MC Fun Mod",
+	"description": "A fun Fabric mod for my own server.",
+	"authors": [
+		"HoangPhu0705"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/mcfunmod/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.hoangphu.mcfunmod.McFunMod"
+		],
+		"client": [
+			"com.hoangphu.mcfunmod.client.McFunModClient"
+		]
+	},
+	"mixins": [
+		"mcfunmod.mixins.json",
+		{
+			"config": "mcfunmod.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.20.1",
+		"minecraft": "~26.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
