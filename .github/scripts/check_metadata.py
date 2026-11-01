@@ -18,7 +18,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
 MOD_JSON = SRC / "main/resources/fabric.mod.json"
-MAIN_CLASS = SRC / "main/java/com/hoangphu/mcfunmod/McFunMod.java"
+MAIN_CLASS = SRC / "main/java/com/codefee/mcfunmod/McFunMod.java"
 
 errors: list[str] = []
 

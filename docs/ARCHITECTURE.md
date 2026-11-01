@@ -5,7 +5,7 @@ The goal: game rules are plain Java that can be tested in milliseconds, and Mine
 code is a thin layer around them that is easy to update when Minecraft changes.
 
 Every package has a `package-info.java` explaining what belongs there. The dependency rules
-below are enforced by [ArchitectureTest](../src/test/java/com/hoangphu/mcfunmod/architecture/ArchitectureTest.java),
+below are enforced by [ArchitectureTest](../src/test/java/com/codefee/mcfunmod/architecture/ArchitectureTest.java),
 so CI fails if they are broken.
 
 ## Layers

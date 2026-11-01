@@ -35,7 +35,7 @@ docs/
   workflows/   CI (ci.yml calls _validate, _build, _datagen, _gametest)
 ```
 
-Mod id: `mcfunmod`. Base package: `com.hoangphu.mcfunmod`.
+Mod id: `mcfunmod`. Base package: `com.codefee.mcfunmod`.
 
 **Before adding code, read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).** It explains the layers
 (`core` / `adapter` / `content` / `registry` / `event` / ...) and has a table of which files to touch

@@ -15,10 +15,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.hoangphu.mcfunmod.McFunMod"
+			"com.codefee.mcfunmod.McFunMod"
 		],
 		"client": [
-			"com.hoangphu.mcfunmod.client.McFunModClient"
+			"com.codefee.mcfunmod.client.McFunModClient"
 		]
 	},
 	"mixins": [

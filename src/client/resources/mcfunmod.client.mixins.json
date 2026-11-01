@@ -1,6 +1,6 @@
 {
 	"required": true,
-	"package": "com.hoangphu.mcfunmod.client.mixin",
+	"package": "com.codefee.mcfunmod.client.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [],
 	"injectors": {

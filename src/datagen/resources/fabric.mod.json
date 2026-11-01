@@ -6,7 +6,7 @@
 	"environment": "*",
 	"entrypoints": {
 		"fabric-datagen": [
-			"com.hoangphu.mcfunmod.datagen.McFunModDataGenerator"
+			"com.codefee.mcfunmod.datagen.McFunModDataGenerator"
 		]
 	},
 	"depends": {
