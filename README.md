@@ -24,34 +24,50 @@ Versions are set in [gradle.properties](gradle.properties). Check https://fabric
 
 ```
 src/
-  main/                     # Common code: runs on server and client
-    java/com/hoangphu/mcfunmod/
-      McFunMod.java         # Main entrypoint (ModInitializer)
-      mixin/                # Common mixins
-    resources/
-      fabric.mod.json       # Mod metadata, entrypoints, dependencies
-      mcfunmod.mixins.json
-      assets/mcfunmod/      # Textures, lang files, icon
-  client/                   # Client-only code: rendering, keybinds, screens
-    java/com/hoangphu/mcfunmod/client/
-      McFunModClient.java   # Client entrypoint (ClientModInitializer)
-      mixin/
-    resources/
-      mcfunmod.client.mixins.json
+  main/        Common code (server + client): core rules, content, registries, events, commands, networking
+  client/      Client-only code: rendering, screens, key bindings
+  datagen/     Data generators: recipes, loot tables, tags, models, lang -> src/main/generated
+  gametest/    In-game tests run on a headless dedicated server
+  test/        Plain JUnit tests for core + architecture rules
+docs/
+  ARCHITECTURE.md   Layers, dependency rules, and "where do I put X"
+.github/
+  workflows/   CI (ci.yml calls _validate, _build, _datagen, _gametest)
 ```
 
-Mod id: `mcfunmod`. Keep server logic in `src/main` so it loads on a dedicated server; anything touching `net.minecraft.client` must live in `src/client`.
+Mod id: `mcfunmod`. Base package: `com.hoangphu.mcfunmod`.
+
+**Before adding code, read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).** It explains the layers
+(`core` / `adapter` / `content` / `registry` / `event` / ...) and has a table of which files to touch
+for each kind of change. Every package also has a `package-info.java` describing what belongs in it.
 
 ## Development
 
 ```powershell
-.\gradlew.bat build        # Build the mod jar into build\libs\
-.\gradlew.bat runClient    # Launch Minecraft with the mod loaded
-.\gradlew.bat runServer    # Launch a dev server in run\ (set eula=true in run\eula.txt on first run)
-.\gradlew.bat genSources   # Decompile Minecraft sources for browsing in the IDE
+.\gradlew.bat build                  # Compile, run unit + architecture + game tests, build the jar
+.\gradlew.bat test -x runGameTest    # Unit + architecture tests only (fast)
+.\gradlew.bat runGameTest            # Game tests on a headless dedicated server
+.\gradlew.bat runDatagen             # Regenerate src/main/generated (commit the result)
+.\gradlew.bat runClient              # Launch Minecraft with the mod loaded
+.\gradlew.bat runServer              # Launch a dev server in run\ (set eula=true in run\eula.txt on first run)
+.\gradlew.bat genSources             # Decompile Minecraft sources for browsing in the IDE
+python .github\scripts\check_metadata.py   # Same metadata checks CI runs
 ```
 
 Build output: `build\libs\mc-fun-mod-<version>.jar` (the `-sources.jar` is not needed on the server).
+
+## CI
+
+GitHub Actions runs on every push to `main` and every pull request:
+
+1. **Validate**: Gradle wrapper checksum, `gradlew` executable bit, mod metadata consistency.
+2. **Build**: compile all source sets, unit + architecture tests, upload the mod jar as an artifact.
+3. **Datagen**: fails if `src/main/generated` is out of date.
+4. **Game tests**: boots a dedicated server with the mod and runs all game tests.
+
+The built jar can be downloaded from the run's **Artifacts** section (`mc-fun-mod-jar`).
+Dependabot opens weekly PRs for GitHub Actions and test library updates; Minecraft/Fabric
+versions are bumped by hand in `gradle.properties` (and `fabric.mod.json`).
 
 ### IDE
 

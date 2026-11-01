@@ -1,0 +1,33 @@
+# Boots a headless dedicated server with the mod (and src/gametest) loaded and runs every game test.
+# Catches what compiling cannot: mixins that fail to apply, registry crashes, client classes
+# leaking into server code, broken data files.
+name: Game tests
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  gametest:
+    name: Dedicated server game tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ./.github/actions/setup-gradle-env
+
+      - name: Run game tests
+        run: ./gradlew runGameTest
+
+      - name: Upload server logs
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: gametest-logs
+          path: |
+            build/run/gameTest/logs/
+            build/run/gameTest/crash-reports/
+          if-no-files-found: ignore

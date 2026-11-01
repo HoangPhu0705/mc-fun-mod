@@ -1,0 +1,40 @@
+# Entry point for CI. Each stage lives in its own reusable workflow (_*.yml) so it can be
+# read, changed and re-run on its own.
+#
+#   validate ──┬── build     (compile, unit + architecture tests, jar artifact)
+#              ├── datagen   (generated resources are up to date)
+#              └── gametest  (mod loads on a real dedicated server, game tests pass)
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate
+    uses: ./.github/workflows/_validate.yml
+
+  build:
+    name: Build
+    needs: validate
+    uses: ./.github/workflows/_build.yml
+
+  datagen:
+    name: Datagen
+    needs: validate
+    uses: ./.github/workflows/_datagen.yml
+
+  gametest:
+    name: Game tests
+    needs: validate
+    uses: ./.github/workflows/_gametest.yml

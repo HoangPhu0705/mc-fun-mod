@@ -41,3 +41,9 @@ replay_*.log
 
 # local dedicated server
 server/
+
+# datagen cache (outputs in src/main/generated are committed)
+src/main/generated/.cache
+
+# runtime logs written next to the project by run tasks
+logs/

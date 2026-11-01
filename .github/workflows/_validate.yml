@@ -1,0 +1,32 @@
+# Fast checks that need no Minecraft download: run first so broken metadata fails in seconds.
+name: Validate
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Wrapper and metadata
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+
+      # Rejects a tampered gradle-wrapper.jar (it is executable code committed to the repo).
+      - name: Validate Gradle wrapper
+        uses: gradle/actions/wrapper-validation@v6
+
+      - name: Check gradlew is executable
+        run: |
+          if [ ! -x gradlew ]; then
+            echo "::error file=gradlew::gradlew is not executable. Fix with: git update-index --chmod=+x gradlew"
+            exit 1
+          fi
+
+      # JSON syntax, version consistency between gradle.properties and fabric.mod.json,
+      # and that every entrypoint/mixin referenced in metadata exists.
+      - name: Check mod metadata
+        run: python3 .github/scripts/check_metadata.py

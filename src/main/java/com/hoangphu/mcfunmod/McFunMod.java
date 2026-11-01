@@ -7,21 +7,25 @@ import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Composition root (common/server side). The only place where the mod is wired together.
+ *
+ * <p>Keep this class free of logic: it creates objects and calls {@code init} methods in order.
+ */
 public class McFunMod implements ModInitializer {
 	public static final String MOD_ID = "mcfunmod";
 
-	// This logger is used to write text to the console and the log file.
-	// It is considered best practice to use your mod id as the logger's name.
-	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	@Override
 	public void onInitialize() {
-		// This code runs as soon as Minecraft is in a mod-load-ready state.
-		// However, some things (like resources) may still be uninitialized.
-		// Proceed with mild caution.
+		// Intended startup order:
+		// 1. config    -> ModConfig.load()
+		// 2. registry  -> ModRegistries.init()
+		// 3. services  -> build adapters (adapter/*) and inject them into core services (core/service/*)
+		// 4. wiring    -> ModNetworking.init(...), ModCommands.init(...), ModEvents.init(...)
 
-		LOGGER.info("Hello Fabric world!");
+		LOGGER.info("MC Fun Mod initialized");
 	}
 
 	public static Identifier id(String path) {

@@ -1,0 +1,47 @@
+# Compiles every source set, runs unit + architecture tests (src/test) and publishes the mod jar.
+# Game tests are excluded here; they run in _gametest.yml.
+name: Build
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Compile, test, package
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ./.github/actions/setup-gradle-env
+
+      - name: Compile all source sets
+        run: ./gradlew classes clientClasses testClasses gametestClasses datagenClasses
+
+      - name: Unit and architecture tests
+        run: ./gradlew test -x runGameTest
+
+      - name: Build jar
+        run: ./gradlew build -x runGameTest
+
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-reports
+          path: build/reports/tests/
+          if-no-files-found: ignore
+
+      - name: Upload mod jar
+        uses: actions/upload-artifact@v7
+        with:
+          name: mc-fun-mod-jar
+          # The -sources jar is for IDEs; servers only need the main jar.
+          path: |
+            build/libs/*.jar
+            !build/libs/*-sources.jar
+          if-no-files-found: error
+          retention-days: 14

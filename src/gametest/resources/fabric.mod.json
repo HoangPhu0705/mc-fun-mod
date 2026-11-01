@@ -1,0 +1,13 @@
+{
+	"schemaVersion": 1,
+	"id": "mcfunmod-gametest",
+	"version": "0.0.0",
+	"name": "MC Fun Mod Game Tests",
+	"environment": "*",
+	"entrypoints": {
+		"fabric-gametest": []
+	},
+	"depends": {
+		"mcfunmod": "*"
+	}
+}
