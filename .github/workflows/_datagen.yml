@@ -1,0 +1,33 @@
+# Runs data generation and fails if src/main/generated differs from what is committed,
+# i.e. someone changed a datagen provider but forgot to run `./gradlew runDatagen`.
+name: Datagen
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  datagen:
+    name: Generated resources up to date
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: ./.github/actions/setup-gradle-env
+
+      # Client-side datagen (models) boots the game client, so give it a virtual display.
+      - name: Run datagen
+        run: xvfb-run --auto-servernum ./gradlew runDatagen
+
+      - name: Check for uncommitted generated files
+        run: |
+          changes=$(git status --porcelain -- src/main/generated)
+          if [ -n "$changes" ]; then
+            echo "$changes"
+            echo "::error::src/main/generated is stale. Run './gradlew runDatagen' and commit the result."
+            git diff -- src/main/generated
+            exit 1
+          fi

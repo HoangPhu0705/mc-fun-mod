@@ -1,0 +1,17 @@
+# Weekly PRs for GitHub Actions and Gradle library updates (JUnit, ArchUnit).
+# Minecraft / Fabric versions are bumped by hand from https://fabricmc.net/develop,
+# because they must move together (see gradle.properties).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: gradle
+    directory: /
+    schedule:
+      interval: weekly
+    ignore:
+      - dependency-name: "net.fabricmc*"
+      - dependency-name: "com.mojang:minecraft"

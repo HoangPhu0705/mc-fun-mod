@@ -1,0 +1,23 @@
+name: Set up Java and Gradle
+description: Installs the JDK used by the mod and configures Gradle with caching. Shared by every CI job.
+
+inputs:
+  java-version:
+    description: JDK version. Must match the toolchain in build.gradle and "java" in fabric.mod.json.
+    required: false
+    default: "25"
+
+runs:
+  using: composite
+  steps:
+    - name: Set up JDK ${{ inputs.java-version }}
+      uses: actions/setup-java@v6
+      with:
+        distribution: temurin
+        java-version: ${{ inputs.java-version }}
+
+    - name: Set up Gradle
+      uses: gradle/actions/setup-gradle@v6
+      with:
+        # Only main writes the cache; PR builds read it. Keeps the cache from being evicted by branch builds.
+        cache-read-only: ${{ github.ref != 'refs/heads/main' }}

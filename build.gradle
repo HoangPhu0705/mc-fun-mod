@@ -12,6 +12,8 @@ repositories {
 }
 
 loom {
+	// Keeps client-only code (src/client) out of the common jar classpath:
+	// code in src/main cannot reference net.minecraft.client.* and will fail to compile if it tries.
 	splitEnvironmentSourceSets()
 
 	mods {
@@ -22,6 +24,27 @@ loom {
 	}
 }
 
+fabricApi {
+	// Data generation: src/datagen holds providers for recipes, loot tables, tags, models, lang.
+	// `./gradlew runDatagen` writes JSON into src/main/generated, which is committed and checked by CI.
+	configureDataGeneration {
+		client = true
+		createSourceSet = true
+		strictValidation = true
+		modId = "mcfunmod-datagen"
+	}
+
+	// Game tests: src/gametest holds in-game tests. `./gradlew runGameTest` boots a headless
+	// dedicated server with the mod loaded, runs every test, then exits (used by CI).
+	configureTests {
+		createSourceSet = true
+		modId = "mcfunmod-gametest"
+		enableGameTests = true
+		enableClientGameTests = false
+		eula = true
+	}
+}
+
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -29,6 +52,16 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	// Unit tests for pure Java code (core/) and architecture rules. No Minecraft runtime needed.
+	testImplementation platform("org.junit:junit-bom:${project.junit_version}")
+	testImplementation "org.junit.jupiter:junit-jupiter"
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+	testImplementation "com.tngtech.archunit:archunit-junit5:${project.archunit_version}"
+}
+
+test {
+	useJUnitPlatform()
 }
 
 processResources {
