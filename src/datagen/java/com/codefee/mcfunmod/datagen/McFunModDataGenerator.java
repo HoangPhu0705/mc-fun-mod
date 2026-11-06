@@ -1,5 +1,7 @@
 package com.codefee.mcfunmod.datagen;
 
+import com.codefee.mcfunmod.McFunMod;
+
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
@@ -14,10 +16,19 @@ public class McFunModDataGenerator implements DataGeneratorEntrypoint {
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator generator) {
 		// FabricDataGenerator.Pack pack = generator.createPack();
-		// pack.addProvider(ModRecipeProvider::new);
-		// pack.addProvider(ModLootTableProvider::new);
-		// pack.addProvider(ModTagProvider::new);
 		// pack.addProvider(ModModelProvider::new);
 		// pack.addProvider(ModLanguageProvider::new);
+		// pack.addProvider(ModRecipeProvider::new);
+		// pack.addProvider(ModLootTableProvider::new);
+		// pack.addProvider(ModItemTagProvider::new);
+	}
+
+	/**
+	 * This entrypoint lives in the separate "mcfunmod-datagen" mod (src/datagen), but the files it
+	 * generates belong to "mcfunmod". Without this, lang files and recipes land in the wrong namespace.
+	 */
+	@Override
+	public String getEffectiveModId() {
+		return McFunMod.MOD_ID;
 	}
 }

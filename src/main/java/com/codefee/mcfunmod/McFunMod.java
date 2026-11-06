@@ -8,9 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Composition root (common/server side). The only place where the mod is wired together.
- *
- * <p>Keep this class free of logic: it creates objects and calls {@code init} methods in order.
+ * Mod entry point (common/server side). Only wires things together: no gameplay logic here.
  */
 public class McFunMod implements ModInitializer {
 	public static final String MOD_ID = "mcfunmod";
@@ -19,11 +17,10 @@ public class McFunMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		// Intended startup order:
-		// 1. config    -> ModConfig.load()
-		// 2. registry  -> ModRegistries.init()
-		// 3. services  -> build adapters (adapter/*) and inject them into core services (core/service/*)
-		// 4. wiring    -> ModNetworking.init(...), ModCommands.init(...), ModEvents.init(...)
+		// Startup order:
+		// 1. common   -> ModConfig.load(), ModCreativeTab.init()
+		// 2. features -> one line per feature, e.g. LuckyCoin.init();
+		//                a feature that uses another feature's entry class goes after it.
 
 		LOGGER.info("MC Fun Mod initialized");
 	}
