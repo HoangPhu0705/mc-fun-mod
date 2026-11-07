@@ -22,24 +22,31 @@ Versions are set in [gradle.properties](gradle.properties). Check https://fabric
 
 ## Project layout
 
+The mod is organized by **feature**: everything for one piece of gameplay (its items, events,
+commands and rules) lives in one folder.
+
 ```
 src/
-  main/        Common code (server + client): core rules, content, registries, events, commands, networking
-  client/      Client-only code: rendering, screens, key bindings
-  datagen/     Data generators: recipes, loot tables, tags, models, lang -> src/main/generated
-  gametest/    In-game tests run on a headless dedicated server
-  test/        Plain JUnit tests for core + architecture rules
+  main/java/com/codefee/mcfunmod/
+    McFunMod.java       Entry point: calls each feature's init()
+    common/             Shared by several features: creative tab, register helpers, config, pure-Java helpers
+    feature/<name>/     One folder per feature: entry class + logic/ item/ block/ event/ command/ network/ ...
+    mixin/<name>/       Mixins, one sub-package per feature
+  client/               Client-only parts of features: client/feature/<name>/ (renderers, screens, key bindings)
+  datagen/              Data generators: recipes, loot tables, tags, models, lang -> src/main/generated
+  gametest/             In-game tests run on a headless dedicated server, one class per feature
+  test/                 Plain JUnit tests for logic/ packages + architecture rules
 docs/
-  ARCHITECTURE.md   Layers, dependency rules, and "where do I put X"
+  ARCHITECTURE.md       Feature layout, dependency rules, step-by-step "add a feature" guide
 .github/
-  workflows/   CI (ci.yml calls _validate, _build, _datagen, _gametest)
+  workflows/            CI (ci.yml calls _validate, _build, _datagen, _gametest)
 ```
 
 Mod id: `mcfunmod`. Base package: `com.codefee.mcfunmod`.
 
-**Before adding code, read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).** It explains the layers
-(`core` / `adapter` / `content` / `registry` / `event` / ...) and has a table of which files to touch
-for each kind of change. Every package also has a `package-info.java` describing what belongs in it.
+**Before adding code, read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).** It explains the feature
+layout, the rules CI enforces, and which files to touch for each kind of change. Every package also
+has a `package-info.java` describing what belongs in it.
 
 ## Development
 
